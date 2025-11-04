@@ -4,7 +4,7 @@
 const app = express()
 
 app.use("/hi",(req,res)=>{
-    res.send("hello")
+    res.send("hello0")
 })
 
 app.listen(3000, ()=>{
