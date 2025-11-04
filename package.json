@@ -1,0 +1,23 @@
+{
+  "name": "devtinder",
+  "version": "1.0.0",
+  "description": "Tinder for Devs",
+  "homepage": "https://github.com/Soumyamanna123/DevTinder#readme",
+  "bugs": {
+    "url": "https://github.com/Soumyamanna123/DevTinder/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Soumyamanna123/DevTinder.git"
+  },
+  "license": "ISC",
+  "author": "Soumya Manna",
+  "type": "commonjs",
+  "main": "index.js",
+  "scripts": {
+    "dev": "nodemon src/app.js"
+  },
+  "dependencies": {
+    "express": "^5.1.0"
+  }
+}
