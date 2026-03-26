@@ -1,5 +1,4 @@
 const express = require("express");
-
 const cookieParser = require("cookie-parser");
 const User = require("../model/user");
 const bcrypt = require("bcrypt");
@@ -29,31 +28,47 @@ profileRouter.get("/profile", userauth, async (req, res) => {
 
 profileRouter.patch("/profile/edit", userauth, async (req, res) => {
   try {
+    const allowedUpdates = [
+      "firstName",
+      "lastName",
+      "age",
+      "gender",
+      "photourl",
+      "about",
+      "skills",
+    ];
+
+    const isValid = Object.keys(req.body).every((key) =>
+      allowedUpdates.includes(key),
+    );
+
+    if (!isValid) {
+      return res.status(400).send("Invalid updates");
+    }
+
     const user = req.user;
-    const { firstName, lastName, about } = req.body;
-    if (firstName) {
-      user.firstName = firstName;
-    } if (lastName) {
-      user.lastName = lastName;
-    } if (about) {
-      user.about = about;
-    } await user.save();
-    res.send("user profile updated successfully");  
+
+    Object.keys(req.body).forEach((key) => {
+      user[key] = req.body[key];
+    });
+
+    await user.save();
+
+    res.send(user);
   } catch (err) {
-    res.status(400).send("cant update user profile");
+    res.status(400).send("Update failed");
   }
 });
 
 // profile delete API
 // profileRouter.delete("/profile/delete"), userauth, async (req, res) => {
 //   try {
-//     const user = req.user;    
+//     const user = req.user;
 //     await User.findByIdAndDelete(user._id);
-//     res.send("user profile deleted successfully");  
+//     res.send("user profile deleted successfully");
 //   } catch (err) {
 //     res.status(400).send("cant delete user profile");
-//   } 
+//   }
 // }
-
 
 module.exports = profileRouter;
