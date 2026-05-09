@@ -12,7 +12,7 @@ authRouter.use(cookieParser());
 
 //signup API
 authRouter.post("/signup", async (req, res) => {
-  console.log("BODY:", req.body);
+  // console.log("BODY:", req.body);
   try {
     //validaing the input data
     validateSignupData(req);
@@ -21,6 +21,7 @@ authRouter.post("/signup", async (req, res) => {
     //encryptying the password
     const passwordHash = await bcrypt.hash(password, 12);
 
+    // creating a new user and saving to the database
     const user = new User({
       firstName: req.body.firstName,
       lastName: req.body.lastName,
@@ -30,7 +31,6 @@ authRouter.post("/signup", async (req, res) => {
     await user.save();
     res.send("user have added successfully");
   } catch (err) {
-    // res.status(500).send(err.message)
     res.status(400).send(err.message);
   }
 });
@@ -39,18 +39,22 @@ authRouter.post("/signup", async (req, res) => {
 authRouter.post("/login", async (req, res) => {
   try {
     const { emailId, password } = req.body;
+
+    // Find the user by emailId
     const user = await User.findOne({ emailId: emailId });
     if (!user) {
       throw new Error("Emailid is not found");
     }
+
+    // Validate the password
     const isPasswordMatch = await user.validatePassword(password);
+
     if (isPasswordMatch) {
       // craete a JWT Token
       const token = await user.getJWT();
       // console.log(token);
       //Add the token to cookies  and send response to the user
       res.cookie("token", token);
-
       res.send("Login Successful");
     } else {
       throw new Error("Password is incorrect");
